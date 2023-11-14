@@ -6,23 +6,28 @@ function getComputerChoice() {
     let rand = Math.floor(Math.random()*3);
     switch (rand) {
         case 0:
-            return "Rock";
+            return "ROCK";
         case 1:
-            return "Paper";
+            return "PAPER";
         case 2:
-            return "Scissors";
+            return "SCISSORS";
         default:
             throw Error("Impossible value returned.");
     }
 }
 
 function playRound(playerSelection, computerSelection) {
+    playerSelection = playerSelection.toUpperCase();
+    computerSelection = computerSelection.toUpperCase();
+    if (playerSelection !== "ROCK" && playerSelection !== "PAPER" && playerSelection !== "SCISSORS") {
+        throw Error("Bad player input. Values should be Rock, Paper, or Scissors.");
+    }
     if (playerSelection === computerSelection) {
         return `Game is a tie! Both players played ${playerSelection}`;
     } else if (
-        (playerSelection === "Rock" && computerSelection === "Scissors") ||
-        (playerSelection === "Scissors" && computerSelection === "Paper") ||
-        (playerSelection === "Paper" && computerSelection === "Rock")
+        (playerSelection === "ROCK" && computerSelection === "SCISSORS") ||
+        (playerSelection === "SCISSORS" && computerSelection === "PAPER") ||
+        (playerSelection === "PAPER" && computerSelection === "ROCK")
     ) {
         // Player Wins
         return `You win! ${playerSelection} beats ${computerSelection}`;

@@ -1,6 +1,40 @@
-window.onload = function() {
-    console.log("Page loaded!");
-    game();
+const rock = document.querySelector("#rock");
+const paper = document.querySelector("#paper");
+const scissors = document.querySelector("#scissors");
+
+let gamesPlayed = 0;
+let playerWins = 0;
+let computerWins = 0;
+let roundResult = "";
+let gameResult = "";
+showResults();
+
+rock.addEventListener("click", () => {
+    playRound("ROCK");
+    showResults();
+});
+
+paper.addEventListener("click", () => {
+    playRound("PAPER");
+    showResults();
+});
+
+scissors.addEventListener("click", () => {
+    playRound("SCISSORS");
+    showResults();
+});
+
+function showResults(resultMessage = "") {
+    const results = document.querySelector("#results");
+    let message =
+        `Games Played: ${gamesPlayed}
+        Player Wins: ${playerWins}
+        Computer Wins: ${computerWins}
+        
+        ${roundResult}
+        
+        ${gameResult}`;
+    results.innerText = message;
 }
 
 function getComputerChoice() {
@@ -17,27 +51,37 @@ function getComputerChoice() {
     }
 }
 
-function playRound(playerSelection, computerSelection) {
+function playRound(playerSelection) {
+    if (gamesPlayed >= 5) return;
     playerSelection = playerSelection.toUpperCase();
-    computerSelection = computerSelection.toUpperCase();
+    computerSelection = getComputerChoice().toUpperCase();
     if (playerSelection !== "ROCK" && playerSelection !== "PAPER" && playerSelection !== "SCISSORS") {
         throw Error("Bad player input. Values should be Rock, Paper, or Scissors.");
     }
+    gamesPlayed++;
     if (playerSelection === computerSelection) {
-        console.log(`Game is a tie! Both players played ${playerSelection}`);
-        return 0;
+        roundResult = `Game is a tie! Both players played ${playerSelection}`;
     } else if (
         (playerSelection === "ROCK" && computerSelection === "SCISSORS") ||
         (playerSelection === "SCISSORS" && computerSelection === "PAPER") ||
         (playerSelection === "PAPER" && computerSelection === "ROCK")
     ) {
         // Player Wins
-        console.log(`You win! ${playerSelection} beats ${computerSelection}`);
-        return 1;
+        roundResult = `You win! ${playerSelection} beats ${computerSelection}`;
+        playerWins++;
     } else {
         // Player loses
-        console.log(`You lose! ${computerSelection} beats ${playerSelection}`);
-        return -1;
+        roundResult = `You lose! ${computerSelection} beats ${playerSelection}`;
+        computerWins++;
+    }
+    if (gamesPlayed >= 5) {
+        if (playerWins > computerWins) {
+            gameResult = `GAME OVER: You won the best of five!`;
+        } else if (playerWins < computerWins) {
+            gameResult = `GAME OVER: You lost the best of five!`;
+        } else {
+            gameResult = `GAME OVER: The best of five is a draw!`;
+        }
     }
 }
 
@@ -48,44 +92,4 @@ function isValidChoice(choice) {
         choice === "PAPER" ||
         choice === "SCISSORS"
     );
-}
-
-function game() {
-    let gamesPlayed = 0;
-    let playerWins = 0;
-    let computerWins = 0;
-
-    while (gamesPlayed < 5){
-
-        // Get player input
-        let playerChoice = prompt("Type either Rock, Paper, or Scissors.");
-        console.log(`You picked ${playerChoice}`);
-
-        // Valid player input
-        if (isValidChoice(playerChoice)) {
-            // Generate random computer choice.
-            let computerChoice = getComputerChoice();
-            // Play the round
-            let result = playRound(playerChoice, computerChoice);
-            // If there is a winner, increment the winner.
-            if (result === 1) playerWins++;
-            if (result === -1) computerWins++;
-            // Increment the games played counter
-            gamesPlayed++;
-            
-        } else {
-            // Invalid player input
-            console.log("Invalid input. Please input Rock, Paper, or Scissors.");
-        }
-
-    }
-
-    console.log(`The player has won ${playerWins} times and the computer has won ${computerWins} times.`);
-    if (playerWins > computerWins) {
-        console.log(`You win the series!`);
-    } else if (playerWins < computerWins) {
-        console.log(`You lose the series...`);
-    } else {
-        console.log(`The series is a tie.`);
-    }
 }
